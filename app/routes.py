@@ -4,6 +4,7 @@ from app import db
 from app.models import Menu
 
 @app.route('/')
+@app.route('/health')
 def home():
 	return jsonify({ "status": "ok" })
 

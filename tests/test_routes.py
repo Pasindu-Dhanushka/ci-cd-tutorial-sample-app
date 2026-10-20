@@ -34,6 +34,11 @@ class BasicTests(unittest.TestCase):
         body = json.loads(response.data)
         self.assertEqual(body['status'], 'ok')
 
+    def test_health(self):
+        response = self.app.get('/health')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.data), {'status': 'ok'})
+
     def test_menu_empty(self):
         response = self.app.get('/menu', follow_redirects=True)
         self.assertEqual(response.status_code, 404)
