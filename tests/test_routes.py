@@ -37,6 +37,8 @@ class BasicTests(unittest.TestCase):
     def test_menu_empty(self):
         response = self.app.get('/menu', follow_redirects=True)
         self.assertEqual(response.status_code, 404)
+        body = json.loads(response.data)
+        self.assertIs(body['available'], False)
 
     def test_menu_item(self):
         test_name = "test"
@@ -47,6 +49,7 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, 'application/json')
         body = json.loads(response.data)
+        self.assertIs(body['available'], True)
         self.assertTrue('today_special' in body)
         self.assertEqual(body['today_special'], test_name)
 
