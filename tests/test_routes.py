@@ -37,8 +37,10 @@ class BasicTests(unittest.TestCase):
     def test_menu_empty(self):
         response = self.app.get('/menu', follow_redirects=True)
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.mimetype, 'application/json')
         body = json.loads(response.data)
         self.assertIs(body['available'], False)
+        self.assertEqual(body['error'], 'Sorry, the service is not available today.')
 
     def test_menu_item(self):
         test_name = "test"
