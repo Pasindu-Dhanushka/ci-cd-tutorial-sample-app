@@ -1,5 +1,5 @@
 
-name: CI - Lint and Test
+name: CI/CD - Test and Deploy
 
 on:
   push:
@@ -10,6 +10,7 @@ permissions:
   contents: read
 
 jobs:
+  # Continuous Integration
   test:
     name: Run Python Tests
     runs-on: ubuntu-latest
@@ -43,3 +44,25 @@ jobs:
       - name: Run unit tests
         run: |
           python -m unittest discover -v
+
+  # Continuous Deployment
+  deploy:
+    name: Deploy to Render Staging
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deployment
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "Error: Render deploy hook secret is missing"
+            exit 1
+          fi
+
+          curl --fail --show-error --silent \
+            --request POST "$RENDER_DEPLOY_HOOK_URL"
+
+          echo "Render deployment triggered successfully"
