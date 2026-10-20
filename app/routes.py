@@ -7,7 +7,7 @@ from app.models import Menu
 @app.route('/health')
 def home():
 	return jsonify({ "status": "ok" })
-
+#comment
 @app.route('/menu')
 def menu():
     today = Menu.query.first()
